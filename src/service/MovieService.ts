@@ -1,4 +1,4 @@
-import { Movie } from "../database/entity/Movie";
+import { Movie } from "../entity/Movie";
 
 class MovieService {
    private movies: Movie[];
