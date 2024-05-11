@@ -13,7 +13,7 @@ authenticateRoutes.post(
       {
          [Segments.BODY]: Joi.object().keys({
             email: Joi.string().required(),
-            password: Joi.number().required(),
+            password: Joi.string().required(),
          }),
       },
       {
@@ -30,7 +30,7 @@ authenticateRoutes.post(
          [Segments.BODY]: Joi.object().keys({
             name: Joi.string().required(),
             email: Joi.string().required(),
-            password: Joi.number().required(),
+            password: Joi.string().required(),
          }),
       },
       {
@@ -39,22 +39,5 @@ authenticateRoutes.post(
    ),
    userController.create
 );
-
-authenticateRoutes.get(
-   "/movie/:movie_id",
-   celebrate(
-      {
-         [Segments.PARAMS]: Joi.object().keys({
-            movie_id: Joi.string().required(),
-         }),
-      },
-      {
-         allowUnknown: false,
-      }
-   ),
-   movieController.findById
-);
-
-authenticateRoutes.get("/movie/", movieController.findAll);
 
 export { authenticateRoutes };

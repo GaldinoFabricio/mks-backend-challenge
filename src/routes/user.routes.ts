@@ -9,22 +9,22 @@ const userController = new UserController();
 
 userRoutes.use(ensureAuthenticate);
 
-userRoutes.get(
-   "/:user_id",
+userRoutes.get("/", userController.find);
+
+userRoutes.put(
+   "/passowrd",
    celebrate(
       {
-         [Segments.PARAMS]: Joi.object().keys({
-            user_id: Joi.string().required(),
+         [Segments.BODY]: Joi.object().keys({
+            password: Joi.number().required(),
          }),
       },
       {
          allowUnknown: false,
       }
    ),
-   userController.findById
+   userController.updatePassword
 );
-
-userRoutes.get("/", userController.find);
 
 userRoutes.put(
    "/",

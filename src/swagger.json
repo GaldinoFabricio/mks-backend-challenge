@@ -12,7 +12,7 @@
    },
    "servers": [
       {
-         "url": "http://localhost:3000/api/v1",
+         "url": "http://localhost:3333",
          "description": "Servidor de desenvolvimento"
       },
       {
@@ -21,19 +21,69 @@
       }
    ],
    "paths": {
-      "/": {
+      "/login": {
+         "post": {
+            "summary": "Login de usuario",
+            "description": "Autentica um usuário na base de dados",
+            "tags": ["authenticate"],
+            "requestBody": {
+               "description": "Login de usuário",
+               "content": {
+                  "application/json": {
+                     "schema": {
+                        "type": "object",
+                        "properties": {
+                           "email": {
+                              "type": "string"
+                           },
+                           "password": {
+                              "type": "string"
+                           }
+                        }
+                     }
+                  }
+               },
+               "required": true
+            },
+            "responses": {
+               "201": {
+                  "description": "Usuário autenticado com sucesso",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/User"
+                           }
+                        }
+                     }
+                  }
+               },
+               "401": {
+                  "status": "401",
+                  "description": "Usuário não autenticado"
+               },
+               "500": {
+                  "description": "Erro interno do servidor"
+               }
+            }
+         }
+      },
+      "/create": {
          "post": {
             "summary": "Cadastrado de usuário",
             "description": "Cadastra um novo usuário na base de dados",
             "tags": ["authenticate"],
             "requestBody": {
+               "description": "Create a new user",
                "content": {
                   "application/json": {
                      "schema": {
                         "$ref": "#/components/schemas/User"
                      }
                   }
-               }
+               },
+               "required": true
             },
             "responses": {
                "200": {
@@ -50,6 +100,7 @@
                   }
                },
                "400": {
+                  "status": "400",
                   "description": "Erro na requisição"
                },
                "500": {
@@ -88,7 +139,170 @@
             }
          }
       },
-      "/movies": {
+      "/user/": {
+         "put": {
+            "summary": "Update de usuário",
+            "description": "Atualiza os dados do usuário logado",
+            "tags": ["user"],
+            "security": [{ "bearerAuth": [] }],
+            "requestBody": {
+               "description": "Create a new user",
+               "content": {
+                  "application/json": {
+                     "schema": {
+                        "$ref": "#/components/schemas/User"
+                     }
+                  }
+               },
+               "required": true
+            },
+            "responses": {
+               "200": {
+                  "description": "Usuário cadastrado com sucesso",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/User"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "status": "400",
+                  "description": "Erro na requisição"
+               },
+               "500": {
+                  "description": "Erro interno do servidor"
+               }
+            }
+         }
+      },
+      "/user/password": {
+         "put": {
+            "summary": "Update de senha",
+            "description": "Atualiza a senha do usuário logado",
+            "tags": ["user"],
+            "security": [{ "bearerAuth": [] }],
+            "requestBody": {
+               "description": "Create a new user",
+               "content": {
+                  "application/json": {
+                     "schema": {
+                        "type": "object",
+                        "properties": {
+                           "password": {
+                              "type": "string"
+                           }
+                        }
+                     }
+                  }
+               },
+               "required": true
+            },
+            "responses": {
+               "200": {
+                  "description": "Usuário cadastrado com sucesso",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/User"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "status": "400",
+                  "description": "Erro na requisição"
+               },
+               "500": {
+                  "description": "Erro interno do servidor"
+               }
+            }
+         }
+      },
+      "/movie/create": {
+         "post": {
+            "summary": "Cadastro de filmes",
+            "description": "Retorna o filme cadastrado",
+            "tags": ["movies"],
+            "security": [{ "bearerAuth": [] }],
+            "requestBody": {
+               "description": "Create a new movie",
+               "content": {
+                  "application/json": {
+                     "schema": {
+                        "$ref": "#/components/schemas/Movie"
+                     }
+                  }
+               },
+               "required": true
+            },
+            "responses": {
+               "201": {
+                  "description": "Lista de filmes",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "object",
+                           "$ref": "#/components/schemas/Movie"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "description": "Erro na requisição"
+               },
+               "500": {
+                  "description": "Erro interno do servidor"
+               }
+            }
+         }
+      },
+      "/movie/update": {
+         "put": {
+            "summary": "Update de filmes",
+            "description": "Retorna o filme atualizado",
+            "tags": ["movies"],
+            "security": [{ "bearerAuth": [] }],
+            "requestBody": {
+               "description": "Update a movie",
+               "content": {
+                  "application/json": {
+                     "schema": {
+                        "$ref": "#/components/schemas/Movie"
+                     }
+                  }
+               },
+               "required": true
+            },
+            "responses": {
+               "201": {
+                  "description": "Lista de filmes",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "object",
+                           "$ref": "#/components/schemas/Movie"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "description": "Erro na requisição"
+               },
+               "500": {
+                  "description": "Erro interno do servidor"
+               }
+            }
+         }
+      },
+      "/movie": {
          "get": {
             "summary": "Lista de filmes",
             "description": "Retorna a lista de filmes",
@@ -149,16 +363,30 @@
                }
             }
          },
+         "MovieType": {
+            "type": "object",
+            "properties": {
+               "SERIES": {
+                  "type": "string"
+               },
+               "MOVIE": {
+                  "type": "string"
+               },
+               "DOCUMENTARY": {
+                  "type": "string"
+               }
+            }
+         },
          "Movie": {
             "type": "object",
             "properties": {
                "title": {
                   "type": "string"
                },
-               "type": {
-                  "type": "string"
+               "movie_type": {
+                  "$ref": "#/components/schemas/MovieType"
                },
-               "director": {
+               "description": {
                   "type": "string"
                },
                "id": {

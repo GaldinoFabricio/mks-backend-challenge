@@ -1,6 +1,6 @@
 export interface Movie {
    id: string;
    name: string;
-   type: "ACAO" | "COMEDIA" | "LUTA" | "DRAMA" | "TERROR" | "SUSPENSE";
+   movie_type: "SERIES" | "MOVIES" | "DOCUMENTARY";
    description: string;
 }

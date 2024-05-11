@@ -1,21 +1,22 @@
 import express, { NextFunction, Request, Response } from "express";
-import "reflect-metadata";
 import AppError from "./shared/errors/AppErrors";
 import { isCelebrateError } from "celebrate";
 import routes from "./routes/index.routes";
-import swaggerUI from "swagger-ui-express";
+import { serve, setup } from "swagger-ui-express";
 import swaggerDocs from "./swagger.json";
 
 const app = express();
 
 app.use(express.json());
 
-app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
+app.use("/api-docs", serve, setup(swaggerDocs));
 
 app.use(routes);
 
 app.use(
    (error: Error, request: Request, response: Response, _: NextFunction) => {
+      console.log(error);
+
       if (error instanceof AppError) {
          return response.status(error.statusCode).json({
             status: "error",
@@ -24,6 +25,7 @@ app.use(
       }
 
       if (isCelebrateError(error)) {
+         console.log("entrou");
          const labelErrors: String[] = [];
 
          error.details.forEach((detail) => {

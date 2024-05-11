@@ -1,47 +1,82 @@
-import { Movie } from "../entity/Movie";
+import { Movie, MovieType } from "@prisma/client";
+import { prismaClient } from "../database/prismaClient";
 
 class MovieService {
-   private movies: Movie[];
-
-   constructor() {
-      this.movies = [];
-   }
-
-   public findAll(): Movie[] {
-      return this.movies;
-   }
-
-   public findById(id: string): Movie | undefined {
-      return this.movies.find((movie) => movie.id === id);
-   }
-
-   public create(movie: {
-      name: string;
+   async create(movie: {
+      title: string;
       description: string;
-      type: "ACAO" | "COMEDIA" | "LUTA" | "DRAMA" | "TERROR" | "SUSPENSE";
-   }): void {
-      this.movies.push({ ...movie, id: String(this.movies.length + 1) });
+      movie_type: "SERIES" | "MOVIE" | "DOCUMENTARY";
+   }): Promise<Movie> {
+      return prismaClient.movie.create({
+         data: {
+            title: movie.title,
+            description: movie.description,
+            movie_type: movie.movie_type,
+         },
+      });
    }
 
-   public update({
+   async findAll(): Promise<
+      {
+         id: string;
+         title: string;
+         description: string;
+         movie_type: MovieType;
+      }[]
+   > {
+      return await prismaClient.movie.findMany({
+         select: {
+            id: true,
+            title: true,
+            description: true,
+            movie_type: true,
+         },
+         where: {
+            deleted_at: null,
+         },
+      });
+   }
+
+   async findById(id: string): Promise<Movie | null> {
+      return await prismaClient.movie.findFirst({
+         where: {
+            id,
+         },
+      });
+   }
+
+   update({
       id,
-      name,
-      type,
+      movie_type,
+      title,
       description,
    }: {
       id: string;
-      name: string;
-      type: "ACAO" | "COMEDIA" | "LUTA" | "DRAMA" | "TERROR" | "SUSPENSE";
+      title: string;
       description: string;
-   }): void {
-      const index = this.movies.findIndex((movie) => movie.id === id);
-      if (index !== -1) {
-         this.movies[index] = { id, name, type, description };
-      }
+      movie_type: "SERIES" | "MOVIE" | "DOCUMENTARY";
+   }): Promise<Movie> {
+      return prismaClient.movie.update({
+         where: {
+            id,
+         },
+         data: {
+            title,
+            description,
+            movie_type,
+         },
+      });
    }
 
-   public delete(id: string): void {
-      this.movies = this.movies.filter((movie) => movie.id !== id);
+   async delete(id: string): Promise<void> {
+      await prismaClient.movie.update({
+         where: {
+            id,
+         },
+         data: {
+            deleted_at: new Date(),
+         },
+      });
    }
 }
 

@@ -7,27 +7,28 @@ class MovieController {
          any,
          any,
          {
-            name: string;
+            title: string;
             description: string;
-            type: "ACAO" | "COMEDIA" | "LUTA" | "DRAMA" | "TERROR" | "SUSPENSE";
+            movie_type: "SERIES" | "MOVIE" | "DOCUMENTARY";
          }
       >,
       response: Response
    ): Promise<Response> {
-      const { name, type, description } = request.body;
+      const { title, movie_type, description } = request.body;
 
       const createMovie = new MovieService();
 
       const movie = await createMovie.create({
-         name,
+         title,
          description,
-         type,
+         movie_type,
       });
 
       return response.status(201).json(movie);
    }
 
    async findAll(request: Request, response: Response): Promise<Response> {
+      console.log("aaaa");
       const listMovies = new MovieService();
 
       const movies = await listMovies.findAll();
@@ -53,22 +54,22 @@ class MovieController {
          any,
          any,
          {
-            name: string;
+            id: string;
+            title: string;
             description: string;
-            type: "ACAO" | "COMEDIA" | "LUTA" | "DRAMA" | "TERROR" | "SUSPENSE";
+            movie_type: "SERIES" | "MOVIE" | "DOCUMENTARY";
          }
       >,
       response: Response
    ): Promise<Response> {
-      const { id } = request.params;
-      const { name, type, description } = request.body;
+      const { id, movie_type, title, description } = request.body;
 
       const updateMovie = new MovieService();
 
       const movie = await updateMovie.update({
          id,
-         name,
-         type,
+         movie_type,
+         title,
          description,
       });
 
