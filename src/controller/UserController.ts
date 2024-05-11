@@ -123,7 +123,6 @@ class UserController {
       const { id } = request.user;
 
       const findId = new UserService();
-
       const user = await findId.findById(id);
 
       return response.status(200).json(user);
