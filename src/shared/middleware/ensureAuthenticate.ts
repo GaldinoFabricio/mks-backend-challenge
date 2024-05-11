@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { verify } from "jsonwebtoken";
 import AppError from "../errors/AppErrors";
-import { UserService } from "../../database/service/UserService";
+import { UserService } from "../../service/UserService";
 
 interface IPayload {
    sub: string;

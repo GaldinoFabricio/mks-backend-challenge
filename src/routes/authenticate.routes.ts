@@ -1,7 +1,7 @@
 import { Joi, Segments, celebrate } from "celebrate";
 import { Router } from "express";
-import { UserController } from "../database/controller/UserController";
-import { MovieController } from "../database/controller/MovieController";
+import { UserController } from "../controller/UserController";
+import { MovieController } from "../controller/MovieController";
 
 const authenticateRoutes = Router();
 const userController = new UserController();

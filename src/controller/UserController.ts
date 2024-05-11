@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { GenerateTokenProvider } from "../../shared/provider/GenerateTokenProvider";
+import { GenerateTokenProvider } from "../shared/provider/GenerateTokenProvider";
 import { UserService } from "../service/UserService";
 
 class UserController {

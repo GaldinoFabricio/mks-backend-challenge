@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { UserController } from "../database/controller/UserController";
+import { UserController } from "../controller/UserController";
 import { Joi, Segments, celebrate } from "celebrate";
 import { ensureAuthenticate } from "../shared/middleware/ensureAuthenticate";
 

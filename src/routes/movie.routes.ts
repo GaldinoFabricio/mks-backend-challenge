@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { MovieController } from "../database/controller/MovieController";
+import { MovieController } from "../controller/MovieController";
 import { Joi, Segments, celebrate } from "celebrate";
 import { ensureAuthenticate } from "../shared/middleware/ensureAuthenticate";
 
