@@ -5,4 +5,4 @@ node_modules
 yarn.lock
 yarn-error.log
 
-src/database/migrations
+prisma/miragtions
