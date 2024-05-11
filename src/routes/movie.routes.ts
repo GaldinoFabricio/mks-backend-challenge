@@ -1,10 +1,13 @@
 import { Router } from "express";
 import { MovieController } from "../database/controller/MovieController";
 import { Joi, Segments, celebrate } from "celebrate";
+import { ensureAuthenticate } from "../shared/middleware/ensureAuthenticate";
 
 const movieRoutes = Router();
 
 const movieController = new MovieController();
+
+movieRoutes.use(ensureAuthenticate);
 
 movieRoutes.post(
    "/movie",
@@ -24,23 +27,6 @@ movieRoutes.post(
    ),
    movieController.create
 );
-
-movieRoutes.get(
-   "/:movie_id",
-   celebrate(
-      {
-         [Segments.PARAMS]: Joi.object().keys({
-            movie_id: Joi.string().required(),
-         }),
-      },
-      {
-         allowUnknown: false,
-      }
-   ),
-   movieController.findById
-);
-
-movieRoutes.get("/", movieController.findAll);
 
 movieRoutes.put(
    "/",

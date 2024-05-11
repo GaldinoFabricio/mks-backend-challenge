@@ -3,10 +3,14 @@ import "reflect-metadata";
 import AppError from "./shared/errors/AppErrors";
 import { isCelebrateError } from "celebrate";
 import routes from "./routes/index.routes";
+import swaggerUI from "swagger-ui-express";
+import swaggerDocs from "./swagger.json";
 
 const app = express();
 
 app.use(express.json());
+
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
 app.use(routes);
 
