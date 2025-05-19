@@ -4,6 +4,8 @@ import PasswordValidator from "password-validator";
 import { UserService } from "../service/UserService";
 import { hash, compare } from "bcrypt";
 import AppError from "../shared/errors/AppErrors";
+import { decode } from "jsonwebtoken";
+import redisClient from "../shared/redisClient";
 
 class UserController {
    async authenticate(
@@ -52,6 +54,23 @@ class UserController {
       };
 
       return response.status(200).json(tokenReturn);
+   }
+
+   async logout(request: Request, response: Response): Promise<Response> {
+      const token = request.headers.authorization?.split(" ")[1];
+      if (!token)
+         return response.status(401).json({ message: "Token ausente" });
+
+      // Decodifique para pegar o tempo de expiração
+      const decoded: any = decode(token);
+      const exp = decoded?.exp;
+
+      if (exp) {
+         const ttl = exp - Math.floor(Date.now() / 1000); // segundos restantes
+         await redisClient.set(`blacklist:${token}`, "1", { EX: ttl });
+      }
+
+      return response.status(200).json({ message: "Logout realizado com sucesso" });
    }
 
    async create(
@@ -120,10 +139,10 @@ class UserController {
    }
 
    async find(request: Request, response: Response): Promise<Response> {
-      const { id } = request.user;
+      const { user_id } = request;
 
       const findId = new UserService();
-      const user = await findId.findById(id);
+      const user = await findId.findById(user_id);
 
       return response.status(200).json(user);
    }
@@ -137,12 +156,12 @@ class UserController {
       response: Response
    ): Promise<Response> {
       const { name, email, password } = request.body;
-      const { id } = request.user;
+      const { user_id } = request;
 
       const updateUser = new UserService();
 
       const user = await updateUser.update({
-         id,
+         id: user_id,
          name,
          email,
          password,
@@ -156,7 +175,7 @@ class UserController {
       response: Response
    ): Promise<Response> {
       const { password } = request.body;
-      const { id } = request.user;
+      const { user_id } = request;
 
       const schema = new PasswordValidator();
       schema
@@ -185,7 +204,7 @@ class UserController {
       const passwordHash = await hash(password, 8);
 
       const user = await updatePassword.updatePassword({
-         id,
+         id:user_id,
          password: passwordHash,
       });
 
@@ -194,3 +213,4 @@ class UserController {
 }
 
 export { UserController };
+

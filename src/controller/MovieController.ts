@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import MovieService from "../service/MovieService";
+import redisClient from "../shared/redisClient";
 
 class MovieController {
    async create(
@@ -28,10 +29,17 @@ class MovieController {
    }
 
    async findAll(request: Request, response: Response): Promise<Response> {
-      console.log("aaaa");
+      const cacheKey = "movies:all";
+      const cachedMovies = await redisClient.get(cacheKey);
+
+      if (cachedMovies) {
+         return response.json(JSON.parse(cachedMovies));
+      }
+
       const listMovies = new MovieService();
 
       const movies = await listMovies.findAll();
+      await redisClient.set(cacheKey, JSON.stringify(movies), { EX: 60 });
 
       return response.status(200).json(movies);
    }
